@@ -41,11 +41,16 @@ def share(cookie_token, post_id):
         url = f'https://graph.facebook.com/me/feed?link=https://m.facebook.com/{post_id}&published=0&access_token={token}'
         res = requests.post(url, headers=headers)
         result = res.json()
-        print(f"[DEBUG] Phản hồi từ Facebook: {result}")
+
         if "id" in result:
             print(f"\033[1;32m[✔] SHARE THÀNH CÔNG - POST ID: {post_id}\033[0m")
         else:
-            print(f"\033[1;31m[✘] SHARE THẤT BẠI - {result.get('error', {}).get('message', 'Không rõ lỗi')}\033[0m")
+            error_code = result.get('error', {}).get('code')
+            if error_code == 368:
+                print("\033[1;31mTài khoản bị block share. Ấn Ctrl + Z để thoát tool\033[0m")
+            else:
+                message = result.get('error', {}).get('message', 'Không rõ lỗi')
+                print(f"\033[1;31m[✘] SHARE THẤT BẠI - {message}\033[0m")
     except Exception as e:
         print(f"[!] Lỗi share: {e}")
 
@@ -53,7 +58,6 @@ def main():
     clear()
     banner()
     
-    # Nhập cookie từ bàn phím
     print("Nhập các cookie (mỗi cookie cách nhau bằng Enter, để trống dòng để kết thúc):")
     cookies = []
     while True:
