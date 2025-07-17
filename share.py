@@ -4,6 +4,7 @@ import time
 import sys
 import os
 from pystyle import Write, Colors
+
 gome_token = []
 
 def clear():
@@ -28,22 +29,21 @@ def banner():
     Write.Print("[+] Youtube: https://www.youtube.com/@xxxxxxxx\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
 
-def get_token(cookies):
-    for cookie in cookies:
-        headers = {
-            'cookie': cookie,
-            'user-agent': 'Mozilla/5.0',
-        }
-        try:
-            res = requests.get('https://business.facebook.com/content_management', headers=headers)
-            if "EAAG" in res.text:
-                token = res.text.split("EAAG")[1].split('"')[0]
-                gome_token.append(f"{cookie}|EAAG{token}")
-                print(f"[+] Lấy token thành công")
-            else:
-                print(f"[-] Không lấy được token từ cookie")
-        except Exception as e:
-            print(f"[!] Lỗi khi lấy token: {e}")
+def get_token(cookie):
+    headers = {
+        'cookie': cookie,
+        'user-agent': 'Mozilla/5.0',
+    }
+    try:
+        res = requests.get('https://business.facebook.com/content_management', headers=headers)
+        if "EAAG" in res.text:
+            token = res.text.split("EAAG")[1].split('"')[0]
+            gome_token.append(f"{cookie}|EAAG{token}")
+            print(f"[+] Lấy token thành công")
+        else:
+            print(f"[-] Không lấy được token từ cookie")
+    except Exception as e:
+        print(f"[!] Lỗi khi lấy token: {e}")
     return gome_token
 
 def share(cookie_token, post_id):
@@ -80,11 +80,11 @@ def main():
         print("Cookie không được để trống.")
         return
     
-    post_id = input("\033[1;33Nhập ID bài viết cần share: \033[1;36m").strip()
-    delay = int(input("\033[1;33Delay giữa mỗi share (giây): \033[1;36m"))
-    count = int(input("\033[1;33Số lần share (tối đa): \033[1;36m"))
+    post_id = input("\033[1;33mNhập ID bài viết cần share: \033[1;36m").strip()
+    delay = int(input("\033[1;33mDelay giữa mỗi share (giây): \033[1;36m"))
+    count = int(input("\033[1;33mSố lần share (tối đa): \033[1;36m"))
     
-    all_token = get_token([cookie])
+    all_token = get_token(cookie)
     
     if not all_token:
         print("Không lấy được token nào.")
