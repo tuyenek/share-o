@@ -3,15 +3,30 @@ import threading
 import time
 import sys
 import os
-
+from pystyle import Write, Colors
 gome_token = []
 
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
 
 def banner():
-    print("\033[1;36mTool Share Facebook bằng Cookie - Made by Tuyên\033[0m")
-    print("--------------------------------------------------")
+    Write.Print(r'''
+
+  _   _ __  __     _____                       
+ | | | |  \/  |   |_   _|   _ _   _  ___ _ __  
+ | |_| | |\/| |_____| || | | | | | |/ _ \ '_ \ 
+ |  _  | |  | |_____| || |_| | |_| |  __/ | | |
+ |_| |_|_|  |_|     |_| \__,_|\__, |\___|_| |_|
+                              |___/            
+
+                                                       
+''', Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+
+    Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
+    Write.Print("[+] Tool By Minh Tuyên-TuyenNzo\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+    Write.Print("[+] Zalo: 0379956051\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+    Write.Print("[+] Youtube: https://www.youtube.com/@xxxxxxxx\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+    Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
 
 def get_token(cookies):
     for cookie in cookies:
