@@ -73,21 +73,16 @@ def main():
     clear()
     banner()
     
-    print("Nhập các cookie (mỗi cookie cách nhau bằng Enter, để trống dòng để kết thúc):")
-    cookies = []
-    while True:
-        c = input("> ")
-        if not c.strip():
-            break
-        cookies.append(c.strip())
+    print("\033[1;33mNhập cookie Facebook:\033[1;36m", end=' ')
+    cookie = input().strip()
     
-    if not cookies:
-        print("Chưa nhập cookie nào.")
+    if not cookie:
+        print("Cookie không được để trống.")
         return
     
-    post_id = input("Nhập ID bài viết cần share: ").strip()
-    delay = int(input("Delay giữa mỗi share (giây): "))
-    count = int(input("Số lần share (tối đa): "))
+    post_id = input("Nhập ID bài viết cần share: \033[1;36m").strip()
+    delay = int(input("Delay giữa mỗi share (giây): \033[1;36m"))
+    count = int(input("Số lần share (tối đa): \033[1;36m"))
     
     all_token = get_token(cookies)
     
