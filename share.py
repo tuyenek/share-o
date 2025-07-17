@@ -1,101 +1,96 @@
-import sys
-import os
-os.system('clear')
 import requests
 import threading
 import time
-import json,requests,time
-from time import strftime
-from pystyle import Colorate, Colors, Write, Add, Center
-__ZALO__ = 'https://zalo.me/g/apmxom704'
-__ADMIN__ = 'C25'
-__SHOP__ = 'vuvanchien.xyz'
-__VERSION__ = '1.0'
-__NHV__ = '\033[1;91m[\033[1;92m●\033[1;91m]\033[1;97m ➻❥'  
-def banner():
-    print(f''' 
-Tool Share Cookie Max Speed
-          ''')
-t=(Colorate.Horizontal(Colors.white_to_black,"- - - - - - - - - - - - - - - - - - - - - - - - -"))
-print(t)
-def clear():
-    if(sys.platform.startswith('win')):
-        os.system('cls')
-    else:
-        os.system('clear')
-gome_token = []
-def get_token(input_file):
-    for cookie in input_file:
-        header_ = {
-            'authority': 'business.facebook.com',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-language': 'vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5',
-            'cache-control': 'max-age=0',
-            'cookie': cookie,
-            'referer': 'https://www.facebook.com/',
-            'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Linux"',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'same-origin',
-            'sec-fetch-user': '?1',
-            'upgrade-insecure-requests': '1',
+import sys
+import os
 
+gome_token = []
+
+def clear():
+    os.system("cls" if os.name == "nt" else "clear")
+
+def banner():
+    print("\033[1;36mTool Share Facebook bằng Cookie - Made by Tuyên\033[0m")
+    print("--------------------------------------------------")
+
+def get_token(cookies):
+    for cookie in cookies:
+        headers = {
+            'cookie': cookie,
+            'user-agent': 'Mozilla/5.0',
         }
         try:
-            home_business = requests.get('https://business.facebook.com/content_management', headers=header_).text
-            token = home_business.split('EAAG')[1].split('","')[0]
-            cookie_token = f'{cookie}|EAAG{token}'
-            gome_token.append(cookie_token)
-        except:
-            pass
+            res = requests.get('https://business.facebook.com/content_management', headers=headers)
+            if "EAAG" in res.text:
+                token = res.text.split("EAAG")[1].split('"')[0]
+                gome_token.append(f"{cookie}|EAAG{token}")
+                print(f"[+] Lấy token thành công")
+            else:
+                print(f"[-] Không lấy được token từ cookie")
+        except Exception as e:
+            print(f"[!] Lỗi khi lấy token: {e}")
     return gome_token
 
-def share(tach, id_share):
-    cookie = tach.split('|')[0]
-    token = tach.split('|')[1]
-    he = {
-        'accept': '*/*',
-        'accept-encoding': 'gzip, deflate',
-        'connection': 'keep-alive',
-        'content-length': '0',
+def share(cookie_token, post_id):
+    cookie, token = cookie_token.split('|')
+    headers = {
         'cookie': cookie,
-        'host': 'graph.facebook.com'
+        'user-agent': 'Mozilla/5.0'
     }
     try:
-        res = requests.post(f'https://graph.facebook.com/me/feed?link=https://m.facebook.com/{id_share}&published=0&access_token={token}', headers=he).json()
-    except:
-        pass
-    
-    
-def main_share():
+        url = f'https://graph.facebook.com/me/feed?link=https://m.facebook.com/{post_id}&published=0&access_token={token}'
+        res = requests.post(url, headers=headers)
+        result = res.json()
+        print(f"[DEBUG] Phản hồi từ Facebook: {result}")
+        if "id" in result:
+            print(f"\033[1;32m[✔] SHARE THÀNH CÔNG - POST ID: {post_id}\033[0m")
+        else:
+            print(f"\033[1;31m[✘] SHARE THẤT BẠI - {result.get('error', {}).get('message', 'Không rõ lỗi')}\033[0m")
+    except Exception as e:
+        print(f"[!] Lỗi share: {e}")
+
+def main():
     clear()
     banner()
-    input_file = open(input("\033[1;31m[\033[1;37m=.=\033[1;31m] \033[1;37m=> \033[1m\033[38;5;51mNhập tên file chứa Cookies: \033[1;35m")).read().split('\n')
-    id_share = input("\033[1;31m[\033[1;37m=.=\033[1;31m] \033[1;37m=> \033[1m\033[38;5;51mNhập ID Cần Share: \033[1;35m")
-    delay = int(input("\033[1;31m[\033[1;37m=.=\033[1;31m] \033[1;37m=> \033[1m\033[38;5;51mNhập Delay Share: \033[1;35m"))
-    total_share = int(input("\033[1;31m[\033[1;37m=.=\033[1;31m] \033[1;37m=> \033[1m\033[38;5;51mBao Nhiêu Share Thì Dừng Tool: \033[1;35m"))
-    all = get_token(input_file)
-    total_live = len(all)
-    print(f'\033[1;31m────────────────────────────────────────────────────────────')
-    if total_live == 0:
-        sys.exit()
-    stt = 0
+    
+    # Nhập cookie từ bàn phím
+    print("Nhập các cookie (mỗi cookie cách nhau bằng Enter, để trống dòng để kết thúc):")
+    cookies = []
     while True:
-        for tach in all:
-            stt = stt + 1
-            threa = threading.Thread(target=share, args=(tach, id_share))
-            threa.start()
-            print(f'\033[1;91m[\033[1;33m{stt}\033[1;91m]\033[1;31m ❥ \033[1;95mSHARE\033[1;31m ❥\033[1;36m THÀNH CÔNG\033[1;31m ❥ ID ❥\033[1;31m\033[1;93m {id_share} \033[1;31m❥ \n', end='\r')
-            time.sleep(delay)
-        if stt == total_share:
+        c = input("> ")
+        if not c.strip():
             break
+        cookies.append(c.strip())
+    
+    if not cookies:
+        print("Chưa nhập cookie nào.")
+        return
+    
+    post_id = input("Nhập ID bài viết cần share: ").strip()
+    delay = int(input("Delay giữa mỗi share (giây): "))
+    count = int(input("Số lần share (tối đa): "))
+    
+    all_token = get_token(cookies)
+    
+    if not all_token:
+        print("Không lấy được token nào.")
+        return
+    
+    stt = 0
+    while stt < count:
+        for tk in all_token:
+            if stt >= count:
+                break
+            stt += 1
+            threading.Thread(target=share, args=(tk, post_id)).start()
+            time.sleep(delay)
+    
     gome_token.clear()
-    input('\033[38;5;245m[\033[1;32mSUCCESS\033[38;5;245m] \033[1;32mĐã Share Thành Công | Nhấn [Enter] Để Chạy Lại \033[0m\033[0m')
-while True:
+    input("Đã chạy xong. Nhấn Enter để thoát.")
+
+if __name__ == "__main__":
     try:
-        main_share()
+        main()
     except KeyboardInterrupt:
-        print('\n\033[38;5;245m[\033[38;5;9m!\033[38;5;245m] \033[38;5;9mNhớ Đăng Ký Kênh C25 Tool Nhé^^\033[0m')
+        print("\n[!] Bạn đã dừng tool.")
         sys.exit()
