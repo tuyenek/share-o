@@ -80,11 +80,11 @@ def main():
         print("Cookie không được để trống.")
         return
     
-    post_id = input("Nhập ID bài viết cần share: \033[1;36m").strip()
-    delay = int(input("Delay giữa mỗi share (giây): \033[1;36m"))
-    count = int(input("Số lần share (tối đa): \033[1;36m"))
+    post_id = input("\033[1;33Nhập ID bài viết cần share: \033[1;36m").strip()
+    delay = int(input("\033[1;33Delay giữa mỗi share (giây): \033[1;36m"))
+    count = int(input("\033[1;33Số lần share (tối đa): \033[1;36m"))
     
-    all_token = get_token(cookies)
+    all_token = get_token([cookie])
     
     if not all_token:
         print("Không lấy được token nào.")
