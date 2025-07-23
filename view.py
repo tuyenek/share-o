@@ -46,7 +46,7 @@ def banner():
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
 
 def buff_view_threaded(tiktok_url, num_threads):
-    print(f"{do}[{trang}</>{do}]{trang} => [bold green] Đang gửi {num_threads} request cho link:[/bold green] {tiktok_url}")
+    print(f"=> [bold green] Đang gửi {num_threads} request cho link:[/bold green] {tiktok_url}")
 
     def send_request(i):
         try:
