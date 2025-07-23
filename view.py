@@ -1,183 +1,165 @@
-#!/usr/bin/python3
-# Tool by Lâm Tilo - Đăng nhập bằng cookie PHPSESSID
+import time
+import requests
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+from rich.prompt import Prompt, Confirm
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-import os
-import threading, requests, ctypes, random, json, time, base64, re
-from prettytable import PrettyTable
-from urllib.parse import unquote, urlparse
-from string import ascii_letters, digits
-from time import strftime
-from colorama import init, Fore
+console = Console()
+TOOL_API_URL = "https://buf-view-tiktok-ayacte.vercel.app/tiktokview"
 
-init(autoreset=True)
+def show_banner():
+    banner_text = Text("""
+██████╗░░█████╗░██╗░░░██╗  ████████╗████████╗
+██╔══██╗██╔══██╗╚██╗░██╔╝  ╚══██╔══╝╚══██╔══╝
+██████╔╝██║░░██║░╚████╔╝░  ░░░██║░░░░░░██║░░░
+██╔═══╝░██║░░██║░░╚██╔╝░░  ░░░██║░░░░░░██║░░░
+██║░░░░░╚█████╔╝░░░██║░░░  ░░░██║░░░░░░██║░░░
+╚═╝░░░░░░╚════╝░░░░╚═╝░░░  ░░░╚═╝░░░░░░╚═╝░░░
+""", style="bold magenta")
 
-class Zefoy:
-    def __init__(self):
-        self.base_url = 'https://zefoy.com/'
-        self.headers = {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'
-        }
-        self.session = requests.Session()
-        self.service = 'Views'
-        self.services = {}
-        self.services_ids = {}
-        self.services_status = {}
-        self.text = 'LÂM TILO'
-        self.video_key = None
-        self.video_info = None
+    info_text = Text()
+    info_text.append("📌 TOOL: ", style="bold cyan")
+    info_text.append("BUFF VIEW TIKTOK\n", style="bold yellow")
+    info_text.append("📦 VERSION: 1.0.6\n", style="bold green")
+    info_text.append("👨‍💻: Hoang Thanh Tung\n", style="bold blue")
+    info_text.append("⚡ POWER: ✅ Ho tro treo nhieu link (đa luong)\n", style="bold white")
+    info_text.append("🔗 THANH TUNG", style="bold magenta")
 
-        cookie_input = input("[LÂMTILO]</> Dán toàn bộ chuỗi cookie từ trình duyệt Zefoy.com: ").strip()
-		match = re.search(r'PHPSESSID=([^;]+)', cookie_input)
-		if match:
-			phpsessid = match.group(1)
-			self.session.cookies.set("PHPSESSID", phpsessid, domain='zefoy.com')
-			print(f"[LÂMTILO] Sử dụng PHPSESSID: {phpsessid}")
-		else:
-			print("[LÂMTILO] ❌ Không tìm thấy PHPSESSID trong chuỗi cookie.")
-			exit(1)
+    console.print(Panel(banner_text, title="🎯 HTT TOOL", border_style="bright_blue"))
+    console.print(Panel(info_text, border_style="cyan", title="🧠 Thong Tin"))
 
+def buff_view(tiktok_url, loop_num=None):
+    try:
+        response = requests.get(TOOL_API_URL, params={'video': tiktok_url}, timeout=60)
 
-        url1 = input("[LÂMTILO]</> Nhập link video TikTok: ")
-        self.url = url1
+        if response.status_code != 200:
+            console.print(f"❌ [red]Loi HTTP {response.status_code} tu API[/red]")
+            return
 
-    def send_cookie_login(self):
-        request = self.session.get(self.base_url, headers=self.headers)
-        if 'Enter Video URL' in request.text:
-            self.video_key = request.text.split('" placeholder="Enter Video URL"')[0].split('name="')[-1]
-            print('[LÂMTILO]</> Đăng nhập bằng cookie thành công')
-            return True
-        else:
-            print('[LÂMTILO]</> Cookie không hợp lệ hoặc phiên đã hết hạn!')
-            return False
-
-    def get_status_services(self):
-        request = self.session.get(self.base_url, headers=self.headers).text
-        for x in re.findall(r'<h5 class="card-title">.+</h5>\n.+\n.+', request):
-            self.services[x.split('<h5 class="card-title">')[1].split('<')[0].strip()] = \
-                x.split('d-sm-inline-block">')[1].split('</small>')[0].strip()
-        for x in re.findall(r'<h5 class="card-title mb-3">.+</h5>\n<form action=".+">', request):
-            self.services_ids[x.split('title mb-3">')[1].split('<')[0].strip()] = \
-                x.split('<form action="')[1].split('">')[0].strip()
-        for x in re.findall(r'<h5 class="card-title">.+</h5>\n.+<button .+', request):
-            self.services_status[x.split('<h5 class="card-title">')[1].split('<')[0].strip()] = \
-                False if 'disabled class' in x else True
-        return self.services, self.services_status
-
-    def get_table(self):
-        table = PrettyTable(field_names=["ID", "DỊCH VỤ", "Trạng Thái"])
-        i = 1
-        while True:
-            if len(self.get_status_services()[0]) > 1:
-                break
-            else:
-                print('[LÂMTILO] Không lấy được dịch vụ, thử lại...')
-                time.sleep(2)
-        for service in self.services:
-            table.add_row([f"{i}", service, self.services[service]])
-            i += 1
-        print(table)
-
-    def find_video(self):
-        if self.service is None:
-            return (False, "Chưa chọn dịch vụ")
-        while True:
-            if self.service not in self.services_ids:
-                self.get_status_services()
-                time.sleep(1)
-            request = self.session.post(
-                f'{self.base_url}{self.services_ids[self.service]}',
-                headers={
-                    'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary0nU8PjANC8BhQgjZ',
-                    'user-agent': self.headers['user-agent'],
-                    'origin': 'https://zefoy.com'
-                },
-                data=f'------WebKitFormBoundary0nU8PjANC8BhQgjZ\r\nContent-Disposition: form-data; name="{self.video_key}"\r\n\r\n{self.url}\r\n------WebKitFormBoundary0nU8PjANC8BhQgjZ--\r\n'
-            )
-            try:
-                self.video_info = base64.b64decode(unquote(request.text.encode()[::-1])).decode()
-            except:
-                time.sleep(3)
-                continue
-
-            if 'Session expired' in self.video_info:
-                print('[LÂMTILO] Phiên đã hết hạn.')
-                return False
-            elif 'service is currently not working' in self.video_info:
-                return True, '[LÂMTILO] Dịch vụ đang bảo trì.'
-            elif """onsubmit="showHideElements""" in self.video_info:
-                self.video_info = [
-                    self.video_info.split('" name="')[1].split('"')[0],
-                    self.video_info.split('value="')[1].split('"')[0]
-                ]
-                return True, request.text
-            elif 'Checking Timer' in self.video_info:
-                try:
-                    t = int(re.findall(r'ltm=(\d+);', self.video_info)[0])
-                except:
-                    return False
-                while t > 0:
-                    print(f"[LÂMTILO] Vui lòng chờ: {t} giây", end="\r")
-                    time.sleep(1)
-                    t -= 1
-                continue
-            else:
-                print(self.video_info)
-
-    def use_service(self):
-        if self.find_video()[0] is False:
-            return False
-        token = "".join(random.choices(ascii_letters + digits, k=16))
-        request = self.session.post(
-            f'{self.base_url}{self.services_ids[self.service]}',
-            headers={
-                'content-type': f'multipart/form-data; boundary=----WebKitFormBoundary{token}',
-                'user-agent': self.headers['user-agent'],
-                'origin': 'https://zefoy.com'
-            },
-            data=f'------WebKitFormBoundary{token}\r\nContent-Disposition: form-data; name="{self.video_info[0]}"\r\n\r\n{self.video_info[1]}\r\n------WebKitFormBoundary{token}--\r\n'
+        data = response.json()
+        result_panel = Panel.fit(
+            f"""🔁 Lan: {loop_num if loop_num else 1}
+🔗 Link: [bold cyan]{tiktok_url}[/bold cyan]
+📹 Video ID: [bold magenta]{data.get('video_id', 'N/A')}[/bold magenta]
+✅ Thanh cong: [green]{data.get('sent_success', 0)}[/green]
+❌ That bai: [red]{data.get('sent_fail', 0)}[/red]
+🕒 Xu ly: [italic yellow]{round(data.get('time_used', 0), 2)} giay[/italic yellow]
+🧰 Proxy: [italic]{data.get('proxy_used', 'Khong ro')}[/italic]
+⏱️ View se tang dan sau vai phut...
+""",
+            title=f"🎉 KET QUA [{loop_num if loop_num else 1}]", border_style="bright_magenta"
         )
+        console.print(result_panel)
+
+    except requests.exceptions.Timeout:
+        console.print("[bold yellow]⏳ Tool xu ly lau hon du kien. View co the van đang tang.[/bold yellow]")
+    except Exception as e:
+        console.print(f"[bold red]⚠️ Loi khi goi API: {e}[/bold red]")
+
+def buff_view_1000_times(tiktok_url):
+    console.print(f"[bold green]🚀 Dang tien hanh 1000 request mot lan cho link:[/bold green] {tiktok_url}")
+
+    def send_single_request(i):
         try:
-            res = base64.b64decode(unquote(request.text.encode()[::-1])).decode()
-        except:
-            time.sleep(3)
-            return ""
+            response = requests.get(TOOL_API_URL, params={'video': tiktok_url}, timeout=30)
+            if response.status_code == 200:
+                data = response.json()
+                return f"✅ [Thread {i}] Thanh cong: {data.get('sent_success', 0)} | That bai: {data.get('sent_fail', 0)}"
+            else:
+                return f"❌ [Thread {i}] Loi HTTP {response.status_code}"
+        except Exception as e:
+            return f"⚠️ [Thread {i}] Loi: {e}"
 
-        if 'Session expired' in res:
-            print('[LÂMTILO] Phiên đã hết hạn.')
-            return ""
-        elif 'Too many requests' in res:
-            print('[LÂMTILO] Quá nhiều request, chờ tí...')
-            time.sleep(3)
-        elif 'service is currently not working' in res:
-            return '[LÂMTILO] Dịch vụ hiện không hoạt động.'
-        else:
-            print("[LÂMTILO] ✅ " + res.split("sans-serif;text-align:center;color:green;'>")[1].split("</")[0])
+    with ThreadPoolExecutor(max_workers=100) as executor:
+        futures = [executor.submit(send_single_request, i+1) for i in range(1000)]
+        for idx, future in enumerate(as_completed(futures), 1):
+            console.print(future.result())
+            if idx % 100 == 0:
+                console.print(f"[blue]💬 Da gui {idx}/1000 request[/blue]")
 
+def auto_loop_multi(links: list, delay_sec: int, max_workers=5):
+    console.print(Panel(f"[bold yellow]🔁 TREO TOOL ĐANG CHAY VOI {len(links)} LINK (Đa luong)[/bold yellow]\n"
+                        f"⏱️ Delay giua moi vong: {delay_sec} giay\n"
+                        f"🧵 So luong toi đa: {max_workers}\n"
+                        f"❌ Nhan [red]Ctrl + C[/red] đe dung", title="⚙️ AUTO MULTI-THREAD MODE", border_style="bright_green"))
 
-def logo():
-    os.system("cls" if os.name == "nt" else "clear")
-    print(f"""
-{Fore.CYAN}╔════════════════════════════════════════════════════╗
-║{Fore.GREEN}       TOOL BUFF VIEW TIKTOK - BY LÂM TILO         {Fore.CYAN}║
-╚════════════════════════════════════════════════════╝
-{Fore.YELLOW}[!] Đăng nhập bằng PHPSESSID cookie (copy từ trình duyệt Zefoy)
-{Fore.YELLOW}[!] Dán link TikTok để gửi view ngay khi đăng nhập thành công
-""")
-
-
-# === MAIN ===
-if __name__ == "__main__":
-    logo()
-    Z = Zefoy()
-    if Z.send_cookie_login():
-        Z.get_table()
+    loop = 1
+    try:
         while True:
-            try:
-                Z.use_service()
-                print(f"{Fore.YELLOW}[LÂMTILO] ➤ Đợi 5 phút rồi gửi tiếp...")
-                time.sleep(300)
-            except Exception as e:
-                print(f"{Fore.RED}[LỖI] {e}")
-                time.sleep(10)
+            console.print(f"\n[bold blue]🔄 Vong lap #{loop}[/bold blue]")
+
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = {executor.submit(buff_view, link, loop): link for link in links}
+                for future in as_completed(futures):
+                    try:
+                        future.result()
+                    except Exception as e:
+                        console.print(f"[red]⚠️ Loi trong luong: {e}[/red]")
+
+            loop += 1
+            time.sleep(delay_sec)
+    except KeyboardInterrupt:
+        console.print("\n[bold red]🛑 Da dung treo tool theo yeu cau.[/bold red]")
+
+def load_links_input():
+    links = []
+    while True:
+        link = Prompt.ask("🔗 Nhap link TikTok (hoac de trong de ket thuc)")
+        if not link.strip():
+            break
+        if link.startswith("http"):
+            links.append(link.strip())
+        else:
+            console.print("❌ [red]Link khong hop le, phai bat dau bang http[/red]")
+    return links
+
+def load_links_from_file(file_path):
+    links = []
+    try:
+        with open(file_path, "r") as f:
+            for line in f:
+                clean_link = line.strip()
+                if clean_link.startswith("http"):
+                    links.append(clean_link)
+    except Exception as e:
+        console.print(f"[red]⚠️ Khong the doc file: {e}[/red]")
+    return links
+
+def main():
+    show_banner()
+
+    if Confirm.ask("📁 Tai danh sach link tu file .txt?", default=False):
+        file_path = Prompt.ask("📄 Nhap duong dan file (moi dong 1 link)", default="links.txt")
+        links = load_links_from_file(file_path)
     else:
-        print(f"{Fore.RED}[LÂMTILO] Cookie không hợp lệ hoặc đã hết hạn.")
+        links = load_links_input()
+
+    if not links:
+        console.print("[red]❌ Khong co link hop le nao de treo.[/red]")
+        return
+
+    if Confirm.ask("🚀 Ban co muon gui 1000 request mot lan cho tung link?", default=True):
+        for link in links:
+            buff_view_1000_times(link)
+        return
+
+    delay = Prompt.ask("⏱️ Nhap thoi gian delay giua moi vong lap (giay)", default="60")
+    try:
+        delay_sec = int(delay)
+    except:
+        console.print("[red]❌ Delay khong hop le. Dung mac dinh 60s.[/red]")
+        delay_sec = 60
+
+    workers = Prompt.ask("🧵 Nhap so luong luong xu ly dong thoi", default="5")
+    try:
+        max_workers = int(workers)
+    except:
+        console.print("[red]❌ So luong khong hop le. Dung mac dinh 5.[/red]")
+        max_workers = 5
+
+    auto_loop_multi(links, delay_sec, max_workers)
+
+if __name__ == "__main__":
+    main()
