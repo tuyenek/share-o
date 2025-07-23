@@ -1,3 +1,5 @@
+print('dang vao tool. doi moi chut...')
+delay(5)
 import time
 import requests
 import os
@@ -6,6 +8,7 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.prompt import Prompt, Confirm
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 trang = "\033[1;37m"
 xanh_la = "\033[1;32m"
