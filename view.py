@@ -28,6 +28,7 @@ def banner():
 ''', Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
 
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
+    Write.Print("[+]Suộc Tờ rộm của Hoàng Thanh Tùng\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("[+] Tool By Minh Tuyên-TuyenNzo\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("[+] Zalo: 0379956051\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("[+] Youtube: https://www.youtube.com/@xxxxxxxx\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
@@ -113,13 +114,13 @@ def auto_loop_multi(links: list, delay_sec: int, max_workers=5):
 def load_links_input():
     links = []
     while True:
-        link = Prompt.ask("🔗 Nhap link TikTok (hoac de trong de ket thuc)")
+        link = Prompt.ask("🔗 Nhập Link TikTok cần buff (để trống + ấn xuống dòng để kết thúc)")
         if not link.strip():
             break
         if link.startswith("http"):
             links.append(link.strip())
         else:
-            console.print("❌ [red]Link khong hop le, phai bat dau bang http[/red]")
+            console.print("❌ [red]Link Không Hợp Lệ, Phải bắt đầu bằng https[/red]")
     return links
 
 def load_links_from_file(file_path):
@@ -137,8 +138,8 @@ def load_links_from_file(file_path):
 def main():
     banner()
 
-    if Confirm.ask("📁 Tai danh sach link tu file .txt?", default=False):
-        file_path = Prompt.ask("📄 Nhap duong dan file (moi dong 1 link)", default="links.txt")
+    if Confirm.ask("📁 Tải Danh Sách Links Từ File .txt?", default=False):
+        file_path = Prompt.ask("📄 Nhập Đường Dẫn File(moi dong 1 link)", default="links.txt")
         links = load_links_from_file(file_path)
     else:
         links = load_links_input()
