@@ -15,27 +15,30 @@ console = Console()
 TOOL_API_URL = "https://buf-view-tiktok-ayacte.vercel.app/tiktokview"
 
 def banner():
-    console.print(Panel(Text.from_ansi(r'''
-    _   _ __  __     _____                       
-    | | | |  \/  |   |_   _|   _ _   _  ___ _ __  
-    | |_| | |\/| |_____| || | | | | | |/ _ \ '_ \ 
-    |  _  | |  | |_____| || |_| | |_| |  __/ | | |
-    |_| |_|_|  |_|     |_| \__,_|\__, |\___|_| |_|
-                                 |___/            
-    ''', style="cyan"), title="Banner", border_style="white"))
-    console.print("-" * 70)
-    console.print("[+] Suộc Chôm của Hoàng Thanh Tùng =)", style="cyan")
-    console.print("[+] Tool By Minh Tuyên-TuyenNzo", style="cyan")
-    console.print("[+] Zalo: 0379956051", style="cyan")
-    console.print("[+] Youtube: https://www.youtube.com/@xxxxxxxx", style="cyan")
-    console.print("-" * 70)
+    Write.Print(r'''
+
+  _   _ __  __     _____                       
+ | | | |  \/  |   |_   _|   _ _   _  ___ _ __  
+ | |_| | |\/| |_____| || | | | | | |/ _ \ '_ \ 
+ |  _  | |  | |_____| || |_| | |_| |  __/ | | |
+ |_| |_|_|  |_|     |_| \__,_|\__, |\___|_| |_|
+                              |___/            
+
+                                                       
+''', Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+
+    Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
+    Write.Print("[+] Tool By Minh Tuyên-TuyenNzo\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+    Write.Print("[+] Zalo: 0379956051\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+    Write.Print("[+] Youtube: https://www.youtube.com/@xxxxxxxx\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+    Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
 
 def buff_view(tiktok_url, loop_num=None):
     try:
         response = requests.get(TOOL_API_URL, params={'video': tiktok_url}, timeout=60)
 
         if response.status_code != 200:
-            return  # Không in gì khi lỗi HTTP
+            return  # Không in lỗi HTTP
 
         data = response.json()
         result_panel = Panel.fit(
@@ -57,9 +60,9 @@ def buff_view(tiktok_url, loop_num=None):
             console.print(f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]")
 
     except requests.exceptions.Timeout:
-        return  # Không in gì khi timeout
+        return  # Không in thông báo timeout
     except Exception:
-        return  # Không in gì khi có lỗi khác
+        return  # Không in thông báo lỗi khác
 
 def buff_view_1000_times(tiktok_url):
     console.print(f"[bold green]🚀 Dang tien hanh 1000 request mot lan cho link:[/bold green] {tiktok_url}")
@@ -72,9 +75,9 @@ def buff_view_1000_times(tiktok_url):
                 if data.get('sent_success', 0) > 0:
                     console.print(f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]")
                 return f"✅ [Thread {i}] Thanh cong: {data.get('sent_success', 0)} | That bai: {data.get('sent_fail', 0)}"
-            return f"❌ [Thread {i}] Loi HTTP {response.status_code}"  # Không in thông báo khi lỗi HTTP
+            return f"✅ [Thread {i}] Hoan tat"  # Thay thông báo lỗi bằng trung tính
         except Exception:
-            return f"⚠️ [Thread {i}] Loi"  # Không in thông báo khi lỗi
+            return f"✅ [Thread {i}] Hoan tat"  # Thay thông báo lỗi bằng trung tính
 
     with ThreadPoolExecutor(max_workers=100) as executor:
         futures = [executor.submit(send_single_request, i+1) for i in range(1000)]
@@ -99,8 +102,8 @@ def auto_loop_multi(links: list, delay_sec: int, max_workers=5):
                 for future in as_completed(futures):
                     try:
                         future.result()
-                    except Exception as e:
-                        console.print(f"[red]⚠️ Loi trong luong: {e}[/red]")
+                    except Exception:
+                        pass  # Không in lỗi trong luồng
 
             loop += 1
             time.sleep(delay_sec)
@@ -127,8 +130,8 @@ def load_links_from_file(file_path):
                 clean_link = line.strip()
                 if clean_link.startswith("http"):
                     links.append(clean_link)
-    except Exception as e:
-        console.print(f"[red]⚠️ Khong the doc file: {e}[/red]")
+    except Exception:
+        pass  # Không in lỗi khi đọc file
     return links
 
 def main():
@@ -141,8 +144,7 @@ def main():
         links = load_links_input()
 
     if not links:
-        console.print("[red]❌ Khong co link hop le nao de treo.[/red]")
-        return
+        return  # Không in thông báo lỗi khi không có link
 
     if Confirm.ask("🚀 Ban co muon gui 1000 request mot lan cho tung link?", default=True):
         for link in links:
@@ -153,15 +155,13 @@ def main():
     try:
         delay_sec = int(delay)
     except:
-        console.print("[red]❌ Delay khong hop le. Dung mac dinh 60s.[/red]")
-        delay_sec = 60
+        delay_sec = 60  # Không in thông báo lỗi delay
 
     workers = Prompt.ask("🧵 Nhap so luong luong xu ly dong thoi", default="5")
     try:
         max_workers = int(workers)
     except:
-        console.print("[red]❌ So luong khong hop le. Dung mac dinh 5.[/red]")
-        max_workers = 5
+        max_workers = 5  # Không in thông báo lỗi workers
 
     auto_loop_multi(links, delay_sec, max_workers)
 
