@@ -54,10 +54,10 @@ def buff_view_threaded(tiktok_url, num_threads):
             if response.status_code == 200:
                 data = response.json()
                 if data.get('sent_success', 0) > 0:
-                    return f"{do}[{trang}</>{do}]{trang}=> [bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
-            return f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
+                    return f"{do}[{trang}</>{do}]{trang} => [bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
+            return f"{do}[{trang}</>{do}]{trang} => [bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
         except Exception:
-            return f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
+            return f"{do}[{trang}</>{do}]{trang} => [bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
 
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = [executor.submit(send_request, i+1) for i in range(num_threads)]
@@ -69,7 +69,7 @@ def buff_view_threaded(tiktok_url, num_threads):
 def load_links():
     links = []
     while True:
-        link = Prompt.ask(f"{do}[{trang}</>{do}]{trang}=> {xanh_la}Nhập Link TikTok {trang}({vang}bỏ trống để kết thúc{trang})")
+        link = Prompt.ask(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập Link TikTok {trang}({vang}bỏ trống để kết thúc{trang})")
         if not link.strip():
             break
         if link.startswith("http"):
@@ -87,7 +87,7 @@ def main():
         console.print("[red]⛔ Không có link nào được nhập.[/red]")
         return
 
-    threads_input = Prompt.ask(f"{do}[{trang}</>{do}]{trang}=> {xanh_la}Nhập số luồng bạn muốn chạy cho mỗi link", default="500")
+    threads_input = Prompt.ask(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập số luồng bạn muốn chạy cho mỗi link", default="500")
     try:
         num_threads = int(threads_input)
     except:
