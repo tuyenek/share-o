@@ -7,6 +7,17 @@ from rich.text import Text
 from rich.prompt import Prompt, Confirm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+trang = "\033[1;37m"
+xanh_la = "\033[1;32m"
+xanh_duong = "\033[1;34m"
+do = "\033[1;31m"
+vang = "\033[1;33m"
+tim = "\033[1;35m"
+dac_biet = "\033[32;5;245m\033[1m\033[38;5;39m"
+kt_code = "</>"
+reset = "\033[0m"
+
+
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
 clear()
@@ -28,7 +39,7 @@ def banner():
 ''', Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
 
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
-    Write.Print("[+]Suộc Tờ rộm của Hoàng Thanh Tùng\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
+    Write.Print("[+] Suộc Tờ rộm của Hoàng Thanh Tùng\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("[+] Tool By Minh Tuyên-TuyenNzo\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("[+] Zalo: 0379956051\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("[+] Youtube: https://www.youtube.com/@xxxxxxxx\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
@@ -43,7 +54,7 @@ def buff_view_threaded(tiktok_url, num_threads):
             if response.status_code == 200:
                 data = response.json()
                 if data.get('sent_success', 0) > 0:
-                    return f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
+                    return f"{do}[{trang}</>{do}]{trang}=> [bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
             return f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
         except Exception:
             return f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
@@ -58,7 +69,7 @@ def buff_view_threaded(tiktok_url, num_threads):
 def load_links():
     links = []
     while True:
-        link = Prompt.ask("🔗 Nhập Link TikTok (bỏ trống để kết thúc)")
+        link = Prompt.ask(f"{do}[{trang}</>{do}]{trang}=> {xanh_la}Nhập Link TikTok {trang}({vang}bỏ trống để kết thúc{trang})")
         if not link.strip():
             break
         if link.startswith("http"):
@@ -76,7 +87,7 @@ def main():
         console.print("[red]⛔ Không có link nào được nhập.[/red]")
         return
 
-    threads_input = Prompt.ask("🧵 Nhập số luồng bạn muốn chạy cho mỗi link", default="500")
+    threads_input = Prompt.ask(f"{do}[{trang}</>{do}]{trang}=> {xanh_la}Nhập số luồng bạn muốn chạy cho mỗi link", default="500")
     try:
         num_threads = int(threads_input)
     except:
