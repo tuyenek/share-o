@@ -87,7 +87,7 @@ def main():
         console.print("[red]⛔ Không có link nào được nhập.[/red]")
         return
 
-    threads_input = print(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập số luồng bạn muốn chạy cho mỗi link", default="500")
+    threads_input = Prompt.ask()(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập số luồng bạn muốn chạy cho mỗi link", default="500")
     try:
         num_threads = int(threads_input)
     except:
