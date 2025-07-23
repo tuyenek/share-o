@@ -11,20 +11,10 @@ tim = "\033[1;35m"
 dac_biet = "\033[32;5;245m\033[1m\033[38;5;39m"
 kt_code = "</>"
 reset = "\033[0m"
-
-
-def logo():
-    Write.Print(r'''
-    ╔═══════════════════════════════╗              
-    ║       Tool By Tuyên           ║                                                       
-    ╚═══════════════════════════════╝''',
-                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
-                interval=0.001)
-
-
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
-
+print('Loading...')
+time.sleep(3)
 
 clear()
 
