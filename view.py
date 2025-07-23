@@ -1,5 +1,5 @@
 print('dang vao tool. doi moi chut...')
-delay(5)
+time.sleep(5)
 import time
 import requests
 import os
