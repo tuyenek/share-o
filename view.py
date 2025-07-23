@@ -45,7 +45,6 @@ def banner():
     Write.Print("[+] Zalo: 0379956051\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("[+] Youtube: https://www.youtube.com/@xxxxxxxx\n", Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)), interval=0.001)
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
-
 def buff_view_threaded(tiktok_url, num_threads):
     print(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Đang gửi {vang}{num_threads} request cho link: {trang}{tiktok_url}")
 
@@ -65,7 +64,7 @@ def buff_view_threaded(tiktok_url, num_threads):
         for idx, future in enumerate(as_completed(futures), 1):
             console.print(future.result())
             if idx % 50 == 0:
-                print(f"{do}[{trang}</>{do}]{trang} => [blue] Đã gửi {idx}/{num_threads} request")
+                print(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Đã gửi {vang}{idx}/{num_threads} {xanh_la}request")
 
 def load_links():
     links = []
