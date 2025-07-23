@@ -47,7 +47,7 @@ def banner():
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
 
 def buff_view_threaded(tiktok_url, num_threads):
-    print(f"=> [bold green] Đang gửi {num_threads} request cho link:[/bold green] {tiktok_url}")
+    print(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Đang gửi {vang}{num_threads} request cho link: {trang}{tiktok_url}")
 
     def send_request(i):
         try:
@@ -70,7 +70,7 @@ def buff_view_threaded(tiktok_url, num_threads):
 def load_links():
     links = []
     while True:
-        link = Prompt.ask(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập Link TikTok {trang}({vang}bỏ trống để kết thúc{trang})")
+        link = Prompt.ask(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập Link TikTok {trang}({vang}Enter để dừng {trang})")
         if not link.strip():
             break
         if link.startswith("http"):
@@ -95,7 +95,7 @@ def main():
         num_threads = 500
 
     for i, link in enumerate(links, 1):
-        print(f"{vang}================> Đang xử lý link {i}/(links): {link}{reset}")
+        print(f"{vang}================> Đang xử lý link {i}/{len(links)}: {link}{reset}")
         buff_view_threaded(link, num_threads)
 
     print(f"\n{do}[{trang}</>{do}]{trang} => {xanh_duong}✅ Đã hoàn tất toàn bộ tiến trình.{reset}")
