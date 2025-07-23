@@ -40,9 +40,6 @@ def banner():
                 interval=0.001)
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
 
-
-banner()
-
 def buff_view(tiktok_url, loop_num=None):
     try:
         response = requests.get(TOOL_API_URL, params={'video': tiktok_url}, timeout=60)
@@ -141,7 +138,7 @@ def load_links_from_file(file_path):
     return links
 
 def main():
-    show_banner()
+    banner()
 
     if Confirm.ask("📁 Tai danh sach link tu file .txt?", default=False):
         file_path = Prompt.ask("📄 Nhap duong dan file (moi dong 1 link)", default="links.txt")
