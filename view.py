@@ -43,10 +43,10 @@ def buff_view_threaded(tiktok_url, num_threads):
             if response.status_code == 200:
                 data = response.json()
                 if data.get('sent_success', 0) > 0:
-                    return f"[Thread {i}] ✅ Thành công: {data.get('sent_success', 0)} | ❌ Thất bại: {data.get('sent_fail', 0)}"
-            return f"[Thread {i}] ⚠️ Hoàn tất"
+                    return f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
+            return f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
         except Exception:
-            return f"[Thread {i}] ⚠️ Lỗi hoặc hết thời gian"
+            return f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]"
 
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = [executor.submit(send_request, i+1) for i in range(num_threads)]
