@@ -1,6 +1,4 @@
 import time
-print('dang vao tool. doi moi chut...')
-time.sleep(5)
 import requests
 import os
 from rich.console import Console
