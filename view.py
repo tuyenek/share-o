@@ -69,7 +69,7 @@ def buff_view_threaded(tiktok_url, num_threads):
 def load_links():
     links = []
     while True:
-        link = Prompt.ask(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập Link TikTok {trang}({vang}Enter để dừng {trang})")
+        link = print(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập Link TikTok {trang}({vang}Enter để dừng {trang})")
         if not link.strip():
             break
         if link.startswith("http"):
@@ -87,7 +87,7 @@ def main():
         console.print("[red]⛔ Không có link nào được nhập.[/red]")
         return
 
-    threads_input = Prompt.ask(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập số luồng bạn muốn chạy cho mỗi link", default="500")
+    threads_input = print(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập số luồng bạn muốn chạy cho mỗi link", default="500")
     try:
         num_threads = int(threads_input)
     except:
