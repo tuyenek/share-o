@@ -93,8 +93,11 @@ def main():
     except:
         num_threads = 500
 
-    for link in links:
+    for i, link in enumerate(links, 1):
+        console.print(f"{vang}================> Đang xử lý link {i}/{len(links)}: {link}{reset}")
         buff_view_threaded(link, num_threads)
 
-if __name__ == "__main__":
-    main()
+    console.print(f"\n{do}[{trang}</>{do}]{trang} => {xanh_duong}✅ Đã hoàn tất toàn bộ tiến trình.{reset}")
+    time.sleep(2)
+    exit()  # Dừng tool
+
