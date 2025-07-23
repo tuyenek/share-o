@@ -95,10 +95,10 @@ def main():
         num_threads = 500
 
     for i, link in enumerate(links, 1):
-        console.print(f"{vang}================> Đang xử lý link {i}/{len(links)}: {link}{reset}")
+        print(f"{vang}================> Đang xử lý link {i}/(links): {link}{reset}")
         buff_view_threaded(link, num_threads)
 
-    console.print(f"\n{do}[{trang}</>{do}]{trang} => {xanh_duong}✅ Đã hoàn tất toàn bộ tiến trình.{reset}")
+    print(f"\n{do}[{trang}</>{do}]{trang} => {xanh_duong}✅ Đã hoàn tất toàn bộ tiến trình.{reset}")
     time.sleep(2)
     exit()  # Dừng tool
 main()
