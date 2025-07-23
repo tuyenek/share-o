@@ -46,7 +46,7 @@ def banner():
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
 
 def buff_view_threaded(tiktok_url, num_threads):
-    console.print(f"[bold green]🚀 Đang gửi {num_threads} request cho link:[/bold green] {tiktok_url}")
+    console.print(f"{do}[{trang}</>{do}]{trang} => [bold green] Đang gửi {num_threads} request cho link:[/bold green] {tiktok_url}")
 
     def send_request(i):
         try:
@@ -64,7 +64,7 @@ def buff_view_threaded(tiktok_url, num_threads):
         for idx, future in enumerate(as_completed(futures), 1):
             console.print(future.result())
             if idx % 50 == 0:
-                console.print(f"[blue]💬 Đã gửi {idx}/{num_threads} request[/blue]")
+                console.print(f"{do}[{trang}</>{do}]{trang} => [blue] Đã gửi {idx}/{num_threads} request[/blue]")
 
 def load_links():
     links = []
