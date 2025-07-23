@@ -94,7 +94,7 @@ def main():
         num_threads = 500
 
     for i, link in enumerate(links, 1):
-        print(f"{vang}================> Đang xử lý link {i}/{len(links)}: {link}{reset}")
+        print(f"{vang}=> Đang xử lý link {i}/{len(links)}: {link}{reset}"\n)
         buff_view_threaded(link, num_threads)
 
     print(f"\n{do}[{trang}</>{do}]{trang} => {xanh_duong}✅ Đã hoàn tất toàn bộ tiến trình.{reset}")
