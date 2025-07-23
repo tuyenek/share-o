@@ -75,10 +75,10 @@ def buff_view_1000_times(tiktok_url):
                 data = response.json()
                 if data.get('sent_success', 0) > 0:
                     console.print(f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]")
-                return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]"
-            return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]"
+                return f"✅ [Thread {i}] Thanh cong: {data.get('sent_success', 0)} | That bai: {data.get('sent_fail', 0)}"
+            return f"✅ [Thread {i}] Hoan tat"  # Thay thông báo lỗi bằng trung tính
         except Exception:
-            return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]"  # Thay thông báo lỗi bằng trung tính
+            return f"✅ [Thread {i}] Hoan tat"  # Thay thông báo lỗi bằng trung tính
 
     with ThreadPoolExecutor(max_workers=100) as executor:
         futures = [executor.submit(send_single_request, i+1) for i in range(1000)]
@@ -87,12 +87,7 @@ def buff_view_1000_times(tiktok_url):
             if idx % 100 == 0:
                 console.print(f"[blue]💬 Da gui {idx}/1000 request[/blue]")
 
-def auto_loop_multi(links: list, delay_sec: int, max_workers=5):
-    console.print(Panel(f"[bold yellow]🔁 TREO TOOL ĐANG CHAY VOI {len(links)} LINK (Đa luong)[/bold yellow]\n"
-                        f"⏱️ Delay giua moi vong: {delay_sec} giay\n"
-                        f"🧵 So luong toi đa: {max_workers}\n"
-                        f"❌ Nhan [red]Ctrl + C[/red] đe dung", title="⚙️ AUTO MULTI-THREAD MODE", border_style="bright_green"))
-
+def auto_loop(links: list, delay_sec: int, max_workers=1000):
     loop = 1
     try:
         while True:
@@ -147,24 +142,24 @@ def main():
     if not links:
         return  # Không in thông báo lỗi khi không có link
 
-    if Confirm.ask("🚀 Ban co muon gui 1000 request mot lan cho tung link?", default=True):
+    if Confirm.ask("🚀 Bạn có muốn gửi 1000 request một lần cho từng link?", default=True):
         for link in links:
             buff_view_1000_times(link)
         return
 
-    delay = Prompt.ask("⏱️ Nhap thoi gian delay giua moi vong lap (giay)", default="60")
+    delay = Prompt.ask("⏱️ Nhập thời gian delay giữa mỗi vòng lặp (giây)", default="60")
     try:
         delay_sec = int(delay)
     except:
         delay_sec = 60  # Không in thông báo lỗi delay
 
-    workers = Prompt.ask("🧵 Nhap so luong luong xu ly dong thoi", default="5")
+    workers = Prompt.ask("🧵 Nhập số luồng bạn muốn chạy (mặc định 1000): ", default="1000")
     try:
         max_workers = int(workers)
     except:
-        max_workers = 5  # Không in thông báo lỗi workers
+        max_workers = 1000  # Không in thông báo lỗi workers
 
-    auto_loop_multi(links, delay_sec, max_workers)
+    auto_loop(links, delay_sec, max_workers)
 
 if __name__ == "__main__":
     main()
