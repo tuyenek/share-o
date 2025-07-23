@@ -69,7 +69,7 @@ def buff_view_threaded(tiktok_url, num_threads):
 def load_links():
     links = []
     while True:
-        link = input(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập Link TikTok {trang}({vang}Enter để dừng {trang})")
+        link = input(f"{do}[{trang}</>{do}]{trang} => {xanh_la}Nhập Link TikTok {trang}({vang}Enter để dừng {trang}): ")
         if not link.strip():
             break
         if link.startswith("http"):
