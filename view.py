@@ -29,6 +29,7 @@ def banner():
                 interval=0.001)
 
     Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
+    Write.Print("[+] Suộc Chôm của Hoàng Thanh Tùng =) \n",
     Write.Print("[+] Tool By Minh Tuyên-TuyenNzo\n",
                 Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
                 interval=0.001)
