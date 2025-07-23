@@ -1,5 +1,6 @@
 import time
 import requests
+import os
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -14,60 +15,51 @@ console = Console()
 TOOL_API_URL = "https://buf-view-tiktok-ayacte.vercel.app/tiktokview"
 
 def banner():
-    Write.Print(r'''
-
-  _   _ __  __     _____                       
- | | | |  \/  |   |_   _|   _ _   _  ___ _ __  
- | |_| | |\/| |_____| || | | | | | |/ _ \ '_ \ 
- |  _  | |  | |_____| || |_| | |_| |  __/ | | |
- |_| |_|_|  |_|     |_| \__,_|\__, |\___|_| |_|
-                              |___/            
-
-
-''',
-                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
-                interval=0.001)
-
-    Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
-    Write.Print("[+] Suộc Chôm của Hoàng Thanh Tùng =) \n",
-    Write.Print("[+] Tool By Minh Tuyên-TuyenNzo\n",
-                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
-                interval=0.001)
-    Write.Print("[+] Zalo: 0379956051\n",
-                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
-                interval=0.001)
-    Write.Print("[+] Youtube: https://www.youtube.com/@xxxxxxxx\n",
-                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
-                interval=0.001)
-    Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
+    console.print(Panel(Text.from_ansi(r'''
+    _   _ __  __     _____                       
+    | | | |  \/  |   |_   _|   _ _   _  ___ _ __  
+    | |_| | |\/| |_____| || | | | | | |/ _ \ '_ \ 
+    |  _  | |  | |_____| || |_| | |_| |  __/ | | |
+    |_| |_|_|  |_|     |_| \__,_|\__, |\___|_| |_|
+                                 |___/            
+    ''', style="cyan"), title="Banner", border_style="white"))
+    console.print("-" * 70)
+    console.print("[+] Suộc Chôm của Hoàng Thanh Tùng =)", style="cyan")
+    console.print("[+] Tool By Minh Tuyên-TuyenNzo", style="cyan")
+    console.print("[+] Zalo: 0379956051", style="cyan")
+    console.print("[+] Youtube: https://www.youtube.com/@xxxxxxxx", style="cyan")
+    console.print("-" * 70)
 
 def buff_view(tiktok_url, loop_num=None):
     try:
         response = requests.get(TOOL_API_URL, params={'video': tiktok_url}, timeout=60)
 
         if response.status_code != 200:
-            console.print(f"❌ [red]Loi HTTP {response.status_code} tu API[/red]")
-            return
+            return  # Không in gì khi lỗi HTTP
 
         data = response.json()
         result_panel = Panel.fit(
             f"""🔁 Lan: {loop_num if loop_num else 1}
-🔗 Link: [bold cyan]{tiktok_url}[/bold cyan]
-📹 Video ID: [bold magenta]{data.get('video_id', 'N/A')}[/bold magenta]
-✅ Thanh cong: [green]{data.get('sent_success', 0)}[/green]
-❌ That bai: [red]{data.get('sent_fail', 0)}[/red]
-🕒 Xu ly: [italic yellow]{round(data.get('time_used', 0), 2)} giay[/italic yellow]
-🧰 Proxy: [italic]{data.get('proxy_used', 'Khong ro')}[/italic]
-⏱️ View se tang dan sau vai phut...
-""",
+            🔗 Link: [bold cyan]{tiktok_url}[/bold cyan]
+            📹 Video ID: [bold magenta]{data.get('video_id', 'N/A')}[/bold magenta]
+            ✅ Thanh cong: [green]{data.get('sent_success', 0)}[/green]
+            ❌ That bai: [red]{data.get('sent_fail', 0)}[/red]
+            🕒 Xu ly: [italic yellow]{round(data.get('time_used', 0), 2)} giay[/italic yellow]
+            🧰 Proxy: [italic]{data.get('proxy_used', 'Khong ro')}[/italic]
+            ⏱️ View se tang dan sau vai phut...
+            """,
             title=f"🎉 KET QUA [{loop_num if loop_num else 1}]", border_style="bright_magenta"
         )
         console.print(result_panel)
 
+        # Chỉ in thông báo khi buff thành công
+        if data.get('sent_success', 0) > 0:
+            console.print(f"[bold green]Tuyên Deptry Đã cho bạn ít view[/bold green]")
+
     except requests.exceptions.Timeout:
-        console.print("[bold yellow]⏳ Tool xu ly lau hon du kien. View co the van đang tang.[/bold yellow]")
-    except Exception as e:
-        console.print(f"[bold red]⚠️ Loi khi goi API: {e}[/bold red]")
+        return  # Không in gì khi timeout
+    except Exception:
+        return  # Không in gì khi có lỗi khác
 
 def buff_view_1000_times(tiktok_url):
     console.print(f"[bold green]🚀 Dang tien hanh 1000 request mot lan cho link:[/bold green] {tiktok_url}")
@@ -77,11 +69,12 @@ def buff_view_1000_times(tiktok_url):
             response = requests.get(TOOL_API_URL, params={'video': tiktok_url}, timeout=30)
             if response.status_code == 200:
                 data = response.json()
+                if data.get('sent_success', 0) > 0:
+                    console.print(f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]")
                 return f"✅ [Thread {i}] Thanh cong: {data.get('sent_success', 0)} | That bai: {data.get('sent_fail', 0)}"
-            else:
-                return f"❌ [Thread {i}] Loi HTTP {response.status_code}"
-        except Exception as e:
-            return f"⚠️ [Thread {i}] Loi: {e}"
+            return f"❌ [Thread {i}] Loi HTTP {response.status_code}"  # Không in thông báo khi lỗi HTTP
+        except Exception:
+            return f"⚠️ [Thread {i}] Loi"  # Không in thông báo khi lỗi
 
     with ThreadPoolExecutor(max_workers=100) as executor:
         futures = [executor.submit(send_single_request, i+1) for i in range(1000)]
