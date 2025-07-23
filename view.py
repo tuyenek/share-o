@@ -74,10 +74,10 @@ def buff_view_1000_times(tiktok_url):
                 data = response.json()
                 if data.get('sent_success', 0) > 0:
                     console.print(f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]")
-                return f"✅ [Thread {i}] Thanh cong: {data.get('sent_success', 0)} | That bai: {data.get('sent_fail', 0)}"
-            return f"✅ [Thread {i}] Hoan tat"  # Thay thông báo lỗi bằng trung tính
+                return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green"
+            return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]"
         except Exception:
-            return f"✅ [Thread {i}] Hoan tat"  # Thay thông báo lỗi bằng trung tính
+            return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]"  # Thay thông báo lỗi bằng trung tính
 
     with ThreadPoolExecutor(max_workers=100) as executor:
         futures = [executor.submit(send_single_request, i+1) for i in range(1000)]
