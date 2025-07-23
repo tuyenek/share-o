@@ -74,7 +74,7 @@ def buff_view_1000_times(tiktok_url):
                 data = response.json()
                 if data.get('sent_success', 0) > 0:
                     console.print(f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]")
-                return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green"
+                return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]"
             return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]"
         except Exception:
             return f"[bold green]Tuyên Deptry Đã cho bạn ít view (Thread {i})[/bold green]"  # Thay thông báo lỗi bằng trung tính
