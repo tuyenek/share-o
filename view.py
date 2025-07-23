@@ -6,6 +6,10 @@ from rich.text import Text
 from rich.prompt import Prompt, Confirm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+def clear():
+    os.system("cls" if os.name == "nt" else "clear")
+clear()
+
 console = Console()
 TOOL_API_URL = "https://buf-view-tiktok-ayacte.vercel.app/tiktokview"
 
