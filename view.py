@@ -64,7 +64,7 @@ def buff_view_threaded(tiktok_url, num_threads):
         for idx, future in enumerate(as_completed(futures), 1):
             console.print(future.result())
             if idx % 50 == 0:
-                console.print(f"{do}[{trang}</>{do}]{trang} => [blue] Đã gửi {idx}/{num_threads} request[/blue]")
+                print(f"{do}[{trang}</>{do}]{trang} => [blue] Đã gửi {idx}/{num_threads} request[/blue]")
 
 def load_links():
     links = []
