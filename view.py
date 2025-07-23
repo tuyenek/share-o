@@ -13,26 +13,35 @@ clear()
 console = Console()
 TOOL_API_URL = "https://buf-view-tiktok-ayacte.vercel.app/tiktokview"
 
-def show_banner():
-    banner_text = Text("""
-██████╗░░█████╗░██╗░░░██╗  ████████╗████████╗
-██╔══██╗██╔══██╗╚██╗░██╔╝  ╚══██╔══╝╚══██╔══╝
-██████╔╝██║░░██║░╚████╔╝░  ░░░██║░░░░░░██║░░░
-██╔═══╝░██║░░██║░░╚██╔╝░░  ░░░██║░░░░░░██║░░░
-██║░░░░░╚█████╔╝░░░██║░░░  ░░░██║░░░░░░██║░░░
-╚═╝░░░░░░╚════╝░░░░╚═╝░░░  ░░░╚═╝░░░░░░╚═╝░░░
-""", style="bold magenta")
+def banner():
+    Write.Print(r'''
 
-    info_text = Text()
-    info_text.append("📌 TOOL: ", style="bold cyan")
-    info_text.append("BUFF VIEW TIKTOK\n", style="bold yellow")
-    info_text.append("📦 VERSION: 1.0.6\n", style="bold green")
-    info_text.append("👨‍💻: Hoang Thanh Tung\n", style="bold blue")
-    info_text.append("⚡ POWER: ✅ Ho tro treo nhieu link (đa luong)\n", style="bold white")
-    info_text.append("🔗 THANH TUNG", style="bold magenta")
+  _   _ __  __     _____                       
+ | | | |  \/  |   |_   _|   _ _   _  ___ _ __  
+ | |_| | |\/| |_____| || | | | | | |/ _ \ '_ \ 
+ |  _  | |  | |_____| || |_| | |_| |  __/ | | |
+ |_| |_|_|  |_|     |_| \__,_|\__, |\___|_| |_|
+                              |___/            
 
-    console.print(Panel(banner_text, title="🎯 HTT TOOL", border_style="bright_blue"))
-    console.print(Panel(info_text, border_style="cyan", title="🧠 Thong Tin"))
+
+''',
+                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
+                interval=0.001)
+
+    Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
+    Write.Print("[+] Tool By Minh Tuyên-TuyenNzo\n",
+                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
+                interval=0.001)
+    Write.Print("[+] Zalo: 0379956051\n",
+                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
+                interval=0.001)
+    Write.Print("[+] Youtube: https://www.youtube.com/@xxxxxxxx\n",
+                Colors.DynamicMIX((Colors.blue, Colors.purple, Colors.cyan)),
+                interval=0.001)
+    Write.Print("-" * 70 + "\n", Colors.white, interval=0.001)
+
+
+banner()
 
 def buff_view(tiktok_url, loop_num=None):
     try:
