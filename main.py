@@ -1,4 +1,4 @@
-import requests
+rimport requests
 import os
 from pystyle import Write, Colors
 import time
@@ -57,10 +57,10 @@ Write.Print(r'''
             Colors.cyan,
             interval=0.001)
 print(
-    f'{do}[{trang}</>{do}] {trang} => {xanh_la} Nhập {do}[{vang}1{do}]{xanh_la} Để chọn chế độ Buff Shara Ảo Facebook'
+    f'{do}[{trang}</>{do}] {trang} => {xanh_la} Nhập {do}[{vang}1{do}]{xanh_la} Để chọn chế độ Buff Share Ảo Facebook'
 )
 print(
-    f'{do}[{trang}</>{do}] {trang} => {xanh_la} Nhập {do}[{vang}2{do}]{xanh_la} Để chọn chế độ Buff View tiktok đa luồng'
+    f'{do}[{trang}</>{do}] {trang} => {xanh_la} Nhập {do}[{vang}2{do}]{xanh_la} Để chọn chế độ Buff View tiktok ( beta )'
 )
 while True:
     print(f'{do}[{trang}{kt_code}{do}] {trang} => {xanh_la} Chọn Chế độ: {reset}',
