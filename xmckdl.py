@@ -12,7 +12,13 @@ from datetime import datetime
 from tabulate import tabulate
 from urllib.parse import urlparse, parse_qs
 
-
+def load_json(filename):
+    if os.path.exists(filename):
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except: return None
+    return None
 class Col:
     RED = '\033[91m'
     GREEN = '\033[92m'
@@ -70,13 +76,7 @@ def save_json(filename, data):
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4)
 
-def load_json(filename):
-    if os.path.exists(filename):
-        try:
-            with open(filename, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except: return None
-    return None
+
 
 def encode_to_base64(text):
     return base64.b64encode(text.encode('utf-8')).decode('utf-8')
