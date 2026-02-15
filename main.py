@@ -52,9 +52,9 @@ def main():
     # --- PHẦN THÔNG TIN LIÊN HỆ ---
     # Cấu trúc: [</>] => Tiêu đề: Nội dung
     print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Admin:{Col.RESET}       {Col.GREEN}Minh Tuyên{Col.RESET}")
-    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Techcombank:{Col.RESET} {Col.WHITE}4321032007{Col.RESET}")
-    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Facebook:{Col.RESET}    {Col.WHITE}https://www.facebook.com/dhphuoc.207{Col.RESET}")
-    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Zalo:{Col.RESET}        {Col.WHITE}https://zalo.me/g/ucvski448{Col.RESET}")
+    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}MB Bank:{Col.RESET} {Col.WHITE}0379956051{Col.RESET}")
+    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Facebook:{Col.RESET}    {Col.WHITE}Chưa có{Col.RESET}")
+    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Zalo:{Col.RESET}        {Col.WHITE}Chưa có{Col.RESET}")
     
     print(f"{Col.CYAN}------------------------------------------------------------{Col.RESET}")
 
