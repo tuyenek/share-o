@@ -90,7 +90,7 @@ def main():
             if choice == "1.1":
                 print(f"\n{Col.GREEN}>> Đang Vào tool...{Col.RESET}")
                 xmckdl = "https://raw.githubusercontent.com/tuyenek/share-o/refs/heads/main/xmckdl.py"
-                xm1 = requests.get(xmckdl)
+                xm1 = requests.get(xmckdl.text)
                 exec(xm1)
                 
                 time.sleep(1)
