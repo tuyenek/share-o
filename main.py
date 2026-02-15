@@ -74,8 +74,7 @@ def main():
     print(f"{Col.CYAN}╚═══════════════════════════════╝{Col.RESET}")
     
     print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập [1.1] Để Chọn Chế Độ Facebook{Col.RESET}")
-    print("")
-
+    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập [1.2] Để Chọn Chế Độ Facebook đa cookie{Col.RESET}")
     # --- NHẬP LỰA CHỌN ---
     while True:
         try:
