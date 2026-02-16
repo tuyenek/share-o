@@ -10,6 +10,7 @@ import hashlib
 import subprocess
 import urllib3
 from datetime import datetime
+import json
 
 # --- [BẮT BUỘC] CẤU HÌNH ĐỂ KHÔNG BỊ LỖI CHỮ TIẾNG VIỆT TRÊN WINDOWS ---
 if os.name == 'nt':
@@ -80,8 +81,8 @@ def main():
     print(f"{Col.CYAN}╔═══════════════════════════════╗")
     print(f"║       Tool facebook           ║")
     print(f"╚═══════════════════════════════╝{Col.RESET}")
-    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập [1.1] Để Chọn Chế Độ Facebook")
-    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập [1.2] Để Chọn Chế Độ Facebook đa cookie")
+    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập [1.1] Để Chọn Chế Độ Facebook đa cookie")
+    print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập [1.2] Để Chọn Chế Độ Facebook")
     print(f"{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập [1.3] Để Chọn Chế Độ Facebook token{Col.RESET}")
 
     while True:
@@ -89,15 +90,22 @@ def main():
             choice = input(f"\n{Col.RED}[</>]{Col.RESET} => {Col.YELLOW}Nhập Lựa Chọn: {Col.RESET}")
             if choice == "1.1":
                 print(f"\n{Col.GREEN}>> Đang Vào tool...{Col.RESET}")
-                xmckdl = "https://raw.githubusercontent.com/tuyenek/share-o/refs/heads/main/xmckdl.py"
+                xmckdl = "https://raw.githubusercontent.com/tuyenek/share-o/refs/heads/main/xmckdl.py?nocache=0"
                 xm1 = requests.get(xmckdl)
-                exec(xm1.text)
+                exec(xm1.text, globals())
+           
                 
-                time.sleep(1)
-                # Chèn code tool Facebook 1.1 của bạn vào đây
                 break
-            elif choice in ["1.2", "1.3"]:
-                print(f"{Col.YELLOW}>> Chế độ này đang phát triển...{Col.RESET}")
+            elif choice == "1.2":
+                print(f"{Col.YELLOW}>> đang vào tool...{Col.RESET}")
+                xmck = "https://raw.githubusercontent.com/tuyenek/share-o/refs/heads/main/xmck.py?nocache=0"
+                xm2 = requests.get(xmck)
+                exec(xm2.text, globals())
+            elif choice == "1.3":
+                print(f"{Col.YELLOW}>> đang vào tool...{Col.RESET}")
+                xm = "https://raw.githubusercontent.com/tuyenek/share-o/refs/heads/main/xm.py?nocache=0"
+                xm3 = requests.get(xm)
+                exec(xm3, globals())
             else:
                 print(f"{Col.RED}>> Lựa chọn không hợp lệ!{Col.RESET}")
         except KeyboardInterrupt:
