@@ -39,8 +39,8 @@ def banner():
        
     {Col.RESET}""")
     
-    print(f"{Col.RED}   >> Tool By AnhTuyenDZ - Version 2.0 <<   {Col.RESET}")
-    print(f"{Col.YELLOW}   ──────────────────────────────────────   {Col.RESET}")
+    print(f"{Col.RED}   >> Tool By AnhTuyenDZ - Version 1.0.0 <<   {Col.RESET}")
+    print(f"{Col.YELLOW}   ──────────────────────────────────────────────────────   {Col.RESET}")
 
 # ==============================================================================
 # CẤU HÌNH TOOL
@@ -101,11 +101,20 @@ def facebook_info(cookie: str, proxy: str = None, timeout: int = 15):
         lsd = ""
         name = ""
         
+        # --- LOGIC CHECK i_user (PAGE PROFILE) ---
         try:
-            user_id = cookie.split("c_user=")[1].split(";")[0]
+            if "i_user=" in cookie:
+                # Nếu có i_user, đây là cookie page profile
+                user_id = cookie.split("i_user=")[1].split(";")[0]
+            elif "c_user=" in cookie:
+                # Nếu không có i_user, lấy c_user như bình thường
+                user_id = cookie.split("c_user=")[1].split(";")[0]
+            else:
+                return {'success': False}
         except:
-            # print("\033[91m [!] Cookie lỗi: Không tìm thấy c_user.\033[0m")
+            # print("\033[91m [!] Cookie lỗi: Không tìm thấy ID (c_user/i_user).\033[0m")
             return {'success': False}
+        # ----------------------------------------------------------
 
         headers = {
             "authority": "www.facebook.com",
@@ -142,11 +151,31 @@ def facebook_info(cookie: str, proxy: str = None, timeout: int = 15):
         lsd_match = re.findall(r'"LSD",\[\],\{"token":"(.*?)"\}', response)
         if lsd_match: lsd = lsd_match[0]
 
+        # --- LOGIC LẤY TÊN (MỚI THÊM) ---
         try:
-            title = re.search(r'<title>(.*?)</title>', response)
-            name = title.group(1) if title else "Facebook User"
-        except:
-            name = "Facebook User"
+            # Cách 1: Lấy từ JSON dữ liệu (Chính xác nhất)
+            data_split = response.split('"CurrentUserInitialData",[],{')
+            if len(data_split) > 1:
+                json_data_raw = "{" + data_split[1].split("},")[0] + "}"
+                parsed_data = json.loads(json_data_raw)
+                name = parsed_data.get("NAME", "")
+        except: pass
+
+        if not name:
+            try:
+                # Cách 2: Lấy từ biến NAME trong source
+                _sea = response.split(',"NAME":"')[1].split('",')[0]
+                name = bytes(_sea, "utf-8").decode("unicode_escape")
+            except: pass
+
+        if not name:
+            try:
+                # Cách 3: Lấy từ thẻ Title (Dự phòng cuối cùng)
+                title = re.search(r'<title>(.*?)</title>', response)
+                name = title.group(1) if title else "Facebook User"
+            except:
+                name = "Facebook User"
+        # --------------------------------
 
         if "828281030927956" in response:
             # print("\033[91m [!] Tài khoản bị Checkpoint 956.\033[0m")
@@ -174,7 +203,6 @@ def facebook_info(cookie: str, proxy: str = None, timeout: int = 15):
     except Exception as e:
         # print(f"[Facebook.info] Error: {e}")
         return {'success': False}
-
 def _parse_graphql_response(response):
     try:
         response_json = response.json()
@@ -317,18 +345,25 @@ def get_user_balance(token, silent=False):
         return 0
     except: return 0
 
-def get_list_accounts_xsmm(token):
+# --- SỬA ĐỔI: Thêm tham số silent để ẩn bảng khi cần ---
+def get_list_accounts_xsmm(token, silent=False):
     url = "https://xsmm.net/api/taskapi/accounts"
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    print("\n" + " DANH SÁCH TÀI KHOẢN XSMM ".center(60, "="))
+    
+    # Chỉ in tiêu đề nếu không silent
+    if not silent:
+        print("\n" + " DANH SÁCH TÀI KHOẢN XSMM ".center(60, "="))
+    
     uid_map = {} 
     try:
         response = scraper.get(url, headers=headers)
         data = response.json()
         accounts_list = data.get("accounts", [])
         if not accounts_list:
-            print(" [!] Chưa có tài khoản nào trên hệ thống.")
+            if not silent:
+                print(" [!] Chưa có tài khoản nào trên hệ thống.")
             return {}
+        
         table_data = []
         for index, acc in enumerate(accounts_list, start=1):
             name = acc.get("name", "N/A")
@@ -338,7 +373,11 @@ def get_list_accounts_xsmm(token):
             if uid != "N/A" and sys_id: uid_map[uid] = sys_id
             status = "✅ Active" if is_active else "❌ Die/Off"
             table_data.append([index, name, uid, status, sys_id])
-        print(tabulate(table_data, headers=["STT", "Facebook", "UID", "Trạng thái", "System ID"], tablefmt="grid"))
+        
+        # Chỉ in bảng nếu không silent
+        if not silent:
+            print(tabulate(table_data, headers=["STT", "Facebook", "UID", "Trạng thái", "System ID"], tablefmt="grid"))
+            
         return uid_map
     except: return {}
 
@@ -362,7 +401,8 @@ def set_active_account(token, system_id):
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     try:
         if scraper.put(url, headers=headers).status_code in [200, 201]:
-            print(f" [OK] Đã SET ACTIVE tài khoản {system_id}.")
+            # Có thể ẩn dòng này nếu muốn sạch hoàn toàn, hiện tại để lại xác nhận nhỏ
+            # print(f" [OK] Đã SET ACTIVE tài khoản {system_id}.") 
             return True
         return False
     except: return False
@@ -386,6 +426,10 @@ def process_jobs_with_rotation(xsmm_token, cookie_list, delay_time, jobs_per_coo
     url_get_job = "https://xsmm.net/api/taskapi/tasks?type=facebook_like"
     headers = {"Authorization": f"Bearer {xsmm_token}", "Content-Type": "application/json"}
     
+    # --- SỬA ĐỔI: Hiện bảng danh sách 1 lần DUY NHẤT ở đây ---
+    get_list_accounts_xsmm(xsmm_token, silent=False)
+    # -----------------------------------------------------------
+
     print("\n" + " BẮT ĐẦU CHẠY JOB (MULTI-COOKIE MODE) ".center(60, "="))
     
     job_done_total = 0
@@ -396,7 +440,9 @@ def process_jobs_with_rotation(xsmm_token, cookie_list, delay_time, jobs_per_coo
     while True:
         # Lấy cookie hiện tại
         current_cookie = cookie_list[cookie_index % len(cookie_list)]
-        print(f"\n{Col.BLUE} [Change] Đang sử dụng Cookie {cookie_index % len(cookie_list) + 1}/{len(cookie_list)} {Col.RESET}")
+        
+        # --- SỬA ĐỔI: Ẩn log đổi cookie rườm rà, để hiện log gọn ở dưới ---
+        # print(f"\n{Col.BLUE} [Change] Đang sử dụng Cookie {cookie_index % len(cookie_list) + 1}/{len(cookie_list)} {Col.RESET}")
         
         # Đăng nhập FB
         fb_data = facebook_info(current_cookie)
@@ -409,13 +455,16 @@ def process_jobs_with_rotation(xsmm_token, cookie_list, delay_time, jobs_per_coo
             continue
 
         # Active account trên XSMM
-        uid_map = get_list_accounts_xsmm(xsmm_token)
+        # --- SỬA ĐỔI: Gọi hàm với silent=True để không hiện lại bảng ---
+        uid_map = get_list_accounts_xsmm(xsmm_token, silent=True)
+        # ---------------------------------------------------------------
+        
         uid = str(fb_data['user_id'])
         system_id = uid_map.get(uid)
         
         if not system_id:
             if add_account_xsmm_retry(xsmm_token, uid):
-                uid_map = get_list_accounts_xsmm(xsmm_token)
+                uid_map = get_list_accounts_xsmm(xsmm_token, silent=True)
                 system_id = uid_map.get(uid)
         
         if not system_id or not set_active_account(xsmm_token, system_id):
@@ -423,7 +472,9 @@ def process_jobs_with_rotation(xsmm_token, cookie_list, delay_time, jobs_per_coo
             cookie_index += 1
             continue
 
-        print(f" [OK] Đang chạy: {fb_data['name']} (UID: {uid})")
+        # --- SỬA ĐỔI: LOG GỌN THEO YÊU CẦU ---
+        print(f"{Col.GREEN} [RUN] Đang chạy nick {uid} : {fb_data['name']} {Col.RESET}")
+        # -------------------------------------
         
         jobs_done_this_cookie = 0
         while jobs_done_this_cookie < jobs_per_cookie:
